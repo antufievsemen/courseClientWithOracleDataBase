@@ -1,11 +1,6 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -17,9 +12,11 @@ public class Record {
     @Column(nullable = false)
     private long id;
 
+    @ManyToOne
     @Column(name = "book_id")
     private Book book;
 
+    @ManyToOne
     @Column(name = "client_id")
     private Client client;
 
