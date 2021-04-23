@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 
 public interface BookTypeRepository extends JpaRepository<BookType, Long> {
+    boolean existsBookTypeBy(BookType bookType);
 }
