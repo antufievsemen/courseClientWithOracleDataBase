@@ -1,7 +1,17 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.entity;
 
-import javax.persistence.*;
+
+import javax.persistence.Id;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 @Table(name = "journal")
@@ -13,11 +23,9 @@ public class Record {
     private long id;
 
     @ManyToOne
-    @Column(name = "book_id")
     private Book book;
 
     @ManyToOne
-    @Column(name = "client_id")
     private Client client;
 
     @Column(name = "date_begin")
@@ -32,20 +40,24 @@ public class Record {
     public Record() {
     }
 
-    public Record(long id, Book book, Client client, Timestamp dateBeg, Timestamp dateEnd, Timestamp dateReturn) {
+    public Record(long id, Book book, Client client, Timestamp dateBeg, Timestamp dateReturn) {
         this.id = id;
         this.book = book;
         this.client = client;
         this.dateBeg = dateBeg;
-        this.dateEnd = dateEnd;
+        this.dateEnd = Timestamp.valueOf(dateBeg.
+                toLocalDateTime().
+                plusDays(this.book.getBookType().getDayCount()).toString());
         this.dateReturn = dateReturn;
     }
 
-    public Record(Book book, Client client, Timestamp dateBeg, Timestamp dateEnd, Timestamp dateReturn) {
+    public Record(Book book, Client client, Timestamp dateBeg, Timestamp dateReturn) {
         this.book = book;
         this.client = client;
         this.dateBeg = dateBeg;
-        this.dateEnd = dateEnd;
+        this.dateEnd = Timestamp.valueOf(dateBeg.
+                toLocalDateTime().
+                plusDays(this.book.getBookType().getDayCount()).toString());
         this.dateReturn = dateReturn;
     }
 

@@ -31,6 +31,7 @@ public class Book {
         this.id = id;
         this.name = name;
         this.count = count;
+        bookType.incrementCount();
         this.bookType = bookType;
     }
 

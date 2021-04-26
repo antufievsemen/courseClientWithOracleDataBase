@@ -1,10 +1,12 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
+import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.ClientRepository;
 
 import java.util.List;
 
+@Service
 public class ClientService {
 
     private final ClientRepository clientRepository;
@@ -30,11 +32,13 @@ public class ClientService {
     }
 
     public boolean addClient(Client client) {
-        if (!clientRepository.existClientBy(client)) {
-            clientRepository.saveAndFlush(client);
-            return true;
+        if (client == null
+                || clientRepository.existsClientByPassportNumberAndPassportSeria(client.getPassportNumber(),
+                client.getPassportSeria())) {
+            return false;
         }
-        return false;
+        clientRepository.saveAndFlush(client);
+        return true;
     }
 
     public boolean updateClient(Client client) {

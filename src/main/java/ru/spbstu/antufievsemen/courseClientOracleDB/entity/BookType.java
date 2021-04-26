@@ -78,4 +78,8 @@ public class BookType {
     public void setDayCount(int dayCount) {
         this.dayCount = dayCount;
     }
+
+    public void incrementCount() {
+        this.count++;
+    }
 }

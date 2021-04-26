@@ -1,10 +1,12 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
+import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookTypeRepository;
 
 import java.util.List;
 
+@Service
 public class BookTypeService {
 
     private final BookTypeRepository bookTypeRepository;
@@ -30,11 +32,11 @@ public class BookTypeService {
     }
 
     public boolean addBookType(BookType bookType) {
-        if (!bookTypeRepository.existsBookTypeBy(bookType)) {
-            bookTypeRepository.saveAndFlush(bookType);
-            return true;
+        if (bookType == null || bookTypeRepository.existsBookTypeByNameAndFine(bookType.getName(), bookType.getFine())) {
+            return false;
         }
-        return false;
+        bookTypeRepository.saveAndFlush(bookType);
+        return true;
     }
 
     public boolean updateBooKType(BookType bookType) {
@@ -43,5 +45,9 @@ public class BookTypeService {
             return true;
         }
         return false;
+    }
+
+    public BookType getBookTypeByName(String name) {
+        return bookTypeRepository.getBookTypeByName(name);
     }
 }
