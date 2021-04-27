@@ -1,10 +1,12 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullClientException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullClientException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.ClientRepository;
-
-import java.util.List;
 
 @Service
 public class ClientService {
@@ -23,29 +25,29 @@ public class ClientService {
         return clientRepository.getOne(id);
     }
 
-    public boolean deleteClient(long id) {
-        if (clientRepository.existsById(id)) {
+    public Client deleteClient(long id) throws DeleteNullClientException {
+        Optional<Client> client = clientRepository.findById(id);
+        if (client.isPresent()) {
             clientRepository.deleteById(id);
-            return true;
+            return client.get();
         }
-        return false;
+        throw new DeleteNullClientException("delete null client");
     }
 
-    public boolean addClient(Client client) {
-        if (client == null
-                || clientRepository.existsClientByPassportNumberAndPassportSeria(client.getPassportNumber(),
-                client.getPassportSeria())) {
-            return false;
-        }
-        clientRepository.saveAndFlush(client);
-        return true;
+    public Client addClient(Client client) {
+        return clientRepository.saveAndFlush(client);
     }
 
-    public boolean updateClient(Client client) {
-        if (clientRepository.existsById(client.getId())) {
-            clientRepository.saveAndFlush(client);
-            return true;
+    public Client updateClient(Client client) throws UpdateNullClientException {
+        Optional<Client> clientOptional = clientRepository.findById(client.getId());
+        if (clientOptional.isPresent()) {
+            clientRepository.deleteById(client.getId());
+            return clientOptional.get();
         }
-        return false;
+        throw new UpdateNullClientException("update null client");
+    }
+    
+    public boolean existClientWithPassportSeriaAndNum(String seria, String number) {
+        return clientRepository.existsClientByPassportNumberAndPassportSeria(number, seria);
     }
 }

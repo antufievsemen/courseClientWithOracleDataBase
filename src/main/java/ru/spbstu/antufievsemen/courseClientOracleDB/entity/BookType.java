@@ -82,4 +82,7 @@ public class BookType {
     public void incrementCount() {
         this.count++;
     }
+    public void decrementCount() {
+        this.count--;
+    }
 }

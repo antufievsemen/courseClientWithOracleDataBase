@@ -1,19 +1,23 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
-import org.springframework.stereotype.Service;
-import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
-import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookRepository;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
+import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookLimitException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullBookException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookRepository;
 
 @Service
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final RecordService recordService;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, RecordService recordService) {
         this.bookRepository = bookRepository;
+        this.recordService = recordService;
     }
 
     public List<Book> getBooks() {
@@ -24,28 +28,31 @@ public class BookService {
         return bookRepository.getOne(id);
     }
 
-    public boolean deleteBookById(long id) {
-        if (bookRepository.existsById(id)){
-            bookRepository.deleteById(id);
-            return true;
+    public Book deleteBookById(long id) throws DeleteNullBookException {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isPresent()) {
+            if (recordService.existBook(optionalBook.get())) {
+                bookRepository.deleteById(id);
+                Book book = optionalBook.get();
+                book.getBookType().decrementCount();
+                return book;
+            }
         }
-        return false;
+        throw new DeleteNullBookException("delete null book");
     }
 
-    public boolean addBook(Book book) {
-        if (book == null
-                || bookRepository.existsBookByNameAndBookType(book.getName(), book.getBookType())) {
-            return false;
-        }
-        bookRepository.saveAndFlush(book);
-        return true;
+    public Book addBook(Book book) throws BookLimitException {
+        book.getBookType().incrementCount();
+        return bookRepository.saveAndFlush(book);
     }
 
-    public boolean updateBook(Book book) {
-        if (bookRepository.existsById(book.getId())) {
-            bookRepository.saveAndFlush(book);
-            return true;
+    public Book updateBook(Book book) throws UpdateNullBookException {
+        Optional<Book> optionalBook = bookRepository.findById(book.getId());
+        if (optionalBook.isPresent()) {
+            if (recordService.existBook(optionalBook.get())) {
+                return bookRepository.saveAndFlush(book);
+            }
         }
-        return false;
+        throw new UpdateNullBookException("update null book");
     }
 }

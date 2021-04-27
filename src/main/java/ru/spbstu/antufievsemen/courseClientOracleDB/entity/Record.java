@@ -1,17 +1,14 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.entity;
 
 
-import javax.persistence.Id;
+import java.sql.Timestamp;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import java.sql.Timestamp;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
-import java.util.concurrent.TimeUnit;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "journal")
@@ -47,7 +44,7 @@ public class Record {
         this.dateBeg = dateBeg;
         this.dateEnd = Timestamp.valueOf(dateBeg.
                 toLocalDateTime().
-                plusDays(this.book.getBookType().getDayCount()).toString());
+                plusDays(this.book.getBookType().getDayCount()));
         this.dateReturn = dateReturn;
     }
 
@@ -57,7 +54,7 @@ public class Record {
         this.dateBeg = dateBeg;
         this.dateEnd = Timestamp.valueOf(dateBeg.
                 toLocalDateTime().
-                plusDays(this.book.getBookType().getDayCount()).toString());
+                plusDays(this.book.getBookType().getDayCount()));
         this.dateReturn = dateReturn;
     }
 

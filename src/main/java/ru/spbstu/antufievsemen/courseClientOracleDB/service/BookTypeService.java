@@ -1,10 +1,12 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullBookTypeException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookTypeException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookTypeRepository;
-
-import java.util.List;
 
 @Service
 public class BookTypeService {
@@ -23,31 +25,28 @@ public class BookTypeService {
         return bookTypeRepository.getOne(id);
     }
 
-    public boolean deleteBookType(long id) {
-        if (bookTypeRepository.existsById(id)) {
+    public BookType deleteBookType(long id) throws DeleteNullBookTypeException {
+        Optional<BookType> bookTypeOptional = bookTypeRepository.findById(id);
+        if (bookTypeOptional.isPresent()) {
             bookTypeRepository.deleteById(id);
-            return true;
+            return bookTypeOptional.get();
         }
-        return false;
+        throw new DeleteNullBookTypeException("Delete null book type ");
     }
 
-    public boolean addBookType(BookType bookType) {
-        if (bookType == null || bookTypeRepository.existsBookTypeByNameAndFine(bookType.getName(), bookType.getFine())) {
-            return false;
-        }
-        bookTypeRepository.saveAndFlush(bookType);
-        return true;
+    public BookType addBookType(BookType bookType) {
+        return bookTypeRepository.saveAndFlush(bookType);
     }
 
-    public boolean updateBooKType(BookType bookType) {
-        if (bookTypeRepository.existsById(bookType.getId())) {
-            bookTypeRepository.saveAndFlush(bookType);
-            return true;
+    public BookType updateBooKType(BookType bookType) throws UpdateNullBookTypeException {
+        Optional<BookType> optionalBookType = bookTypeRepository.findById(bookType.getId());
+        if (optionalBookType.isPresent()) {
+            return bookTypeRepository.saveAndFlush(bookType);
         }
-        return false;
+        throw new UpdateNullBookTypeException("update null book type");
     }
 
-    public BookType getBookTypeByName(String name) {
-        return bookTypeRepository.getBookTypeByName(name);
+    public int countOfBookTypeEquals(long id) {
+        return bookTypeRepository.countOfBookTypeEquals(id);
     }
 }
