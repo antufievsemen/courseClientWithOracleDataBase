@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookLimitException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullBookException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullRecordException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookTypeException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullRecordException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.RecordRepository;
@@ -17,10 +20,12 @@ public class RecordService{
 
     private final RecordRepository recordRepository;
     private final BookTypeService bookTypeService;
+    private final BookService bookService;
 
-    public RecordService(RecordRepository recordRepository, BookTypeService bookTypeService) {
+    public RecordService(RecordRepository recordRepository, BookTypeService bookTypeService, BookService bookService) {
         this.recordRepository = recordRepository;
         this.bookTypeService = bookTypeService;
+        this.bookService = bookService;
     }
 
     public List<Record> getRecords() {
@@ -40,12 +45,18 @@ public class RecordService{
         throw new DeleteNullRecordException("Delete null record");
     }
 
-    public Record addRecord(Record record) throws BookLimitException {
-        if (getCountOfBooksAtClient(record.getId()) >= 10) {
-            throw new BookLimitException("limit books is 10");
+    public Record addRecord(Record record) throws BookLimitException, UpdateNullBookTypeException, UpdateNullBookException, DeleteNullBookException {
+        if (bookService.getCountOfBook(record.getBook().getId()) > 0
+                && getCountOfBooksAtClient(record.getClient().getId()) < 10) {
+            BookType bookType = record.getBook().getBookType();
+            bookType.decrementOn(1);
+            record.getBook().decrementOn(1);
+            bookService.updateBook(record.getBook());
+            bookTypeService.updateBooKType(bookType);
+            return recordRepository.saveAndFlush(record);
         }
-        record.getBook().getBookType().decrementCount();
-        return recordRepository.saveAndFlush(record);
+
+        throw new BookLimitException("limit books is 10");
     }
 
     public Record updateRecord(Record record) throws UpdateNullRecordException {
@@ -62,7 +73,8 @@ public class RecordService{
         if (recordOptional.isPresent()) {
             record.setDateReturn(Timestamp.valueOf(LocalDateTime.now()));
             recordRepository.saveAndFlush(record);
-            record.getBook().getBookType().incrementCount();
+            record.getBook().getBookType().incrementOn(1);
+            record.getBook().incrementOn(1);
             bookTypeService.updateBooKType(record.getBook().getBookType());
             return record;
         }

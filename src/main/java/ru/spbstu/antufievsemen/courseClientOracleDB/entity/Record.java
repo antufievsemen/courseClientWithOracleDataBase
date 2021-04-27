@@ -2,6 +2,7 @@ package ru.spbstu.antufievsemen.courseClientOracleDB.entity;
 
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,14 +49,24 @@ public class Record {
         this.dateReturn = dateReturn;
     }
 
-    public Record(Book book, Client client, Timestamp dateBeg, Timestamp dateReturn) {
+    public Record(Book book, Client client, Timestamp dateBeg) {
         this.book = book;
         this.client = client;
         this.dateBeg = dateBeg;
         this.dateEnd = Timestamp.valueOf(dateBeg.
                 toLocalDateTime().
                 plusDays(this.book.getBookType().getDayCount()));
-        this.dateReturn = dateReturn;
+        this.dateReturn = null;
+    }
+
+    public Record(Book book, Client client) {
+        this.book = book;
+        this.client = client;
+        this.dateBeg = Timestamp.valueOf(LocalDateTime.now());
+        this.dateEnd = Timestamp.valueOf(dateBeg.
+                toLocalDateTime().
+                plusDays(this.book.getBookType().getDayCount()));
+        this.dateReturn = null;
     }
 
     public long getId() {

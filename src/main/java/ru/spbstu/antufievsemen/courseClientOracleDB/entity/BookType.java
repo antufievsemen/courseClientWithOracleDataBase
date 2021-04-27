@@ -79,10 +79,11 @@ public class BookType {
         this.dayCount = dayCount;
     }
 
-    public void incrementCount() {
-        this.count++;
+    public void incrementOn(int number) {
+        this.count += number;
     }
-    public void decrementCount() {
-        this.count--;
+
+    public void decrementOn(int number) {
+        this.count -= number;
     }
 }

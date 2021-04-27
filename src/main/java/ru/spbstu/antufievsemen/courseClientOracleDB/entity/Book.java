@@ -31,7 +31,6 @@ public class Book {
         this.id = id;
         this.name = name;
         this.count = count;
-        bookType.incrementCount();
         this.bookType = bookType;
     }
 
@@ -67,5 +66,13 @@ public class Book {
 
     public void setBookType(BookType bookType) {
         this.bookType = bookType;
+    }
+
+    public void incrementOn(int number) {
+        this.count += number;
+    }
+
+    public void decrementOn(int number) {
+        this.count -= number;
     }
 }

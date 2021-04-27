@@ -45,8 +45,4 @@ public class BookTypeService {
         }
         throw new UpdateNullBookTypeException("update null book type");
     }
-
-    public int countOfBookTypeEquals(long id) {
-        return bookTypeRepository.countOfBookTypeEquals(id);
-    }
 }
