@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class Record {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
 
@@ -67,6 +67,10 @@ public class Record {
                 toLocalDateTime().
                 plusDays(this.book.getBookType().getDayCount()));
         this.dateReturn = null;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getId() {

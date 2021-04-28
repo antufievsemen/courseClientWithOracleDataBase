@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
 
@@ -49,6 +49,10 @@ public class Client {
         this.fatherName = fatherName;
         this.passportSeria = passportSeria;
         this.passportNumber = passportNumber;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getId() {

@@ -5,9 +5,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullBookException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookTypeException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookNotFoundException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookTypeNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookRepository;
 
 @Service
@@ -25,11 +24,11 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book getBookById(long id) {
-        return bookRepository.getOne(id);
+    public Optional<Book> getBookById(long id) {
+        return bookRepository.findById(id);
     }
 
-    public Book deleteBookById(long id) throws DeleteNullBookException, UpdateNullBookTypeException {
+    public Book deleteBookById(long id) throws BookNotFoundException {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             if (getCountOfBook(id) > 0) {
@@ -41,19 +40,19 @@ public class BookService {
                 return book;
             }
         }
-        throw new DeleteNullBookException("delete null book");
+        throw new BookNotFoundException("delete null book");
     }
 
-    public Book addBook(Book book) throws UpdateNullBookTypeException {
+    public Book addBook(Book book) throws BookTypeNotFoundException {
         book.getBookType().incrementOn(book.getCount());
         bookTypeService.updateBooKType(book.getBookType());
         return bookRepository.saveAndFlush(book);
     }
 
-    public Book updateBook(Book book) throws UpdateNullBookException, DeleteNullBookException, UpdateNullBookTypeException {
+    public Book updateBook(Book book) throws BookNotFoundException, BookTypeNotFoundException {
         Optional<Book> optionalBook = bookRepository.findById(book.getId());
         if (optionalBook.isEmpty()) {
-            throw new UpdateNullBookException("update null book");
+            throw new BookNotFoundException("update null book");
         }
         BookType bookType = book.getBookType();
         int temp_update = optionalBook.get().getCount() - book.getCount();

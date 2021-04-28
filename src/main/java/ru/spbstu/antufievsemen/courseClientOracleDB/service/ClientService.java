@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullClientException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullClientException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.ClientNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.ClientRepository;
 
 @Service
@@ -21,30 +20,30 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public Client getClientById(long id) {
-        return clientRepository.getOne(id);
+    public Optional<Client> getClientById(long id) {
+        return clientRepository.findById(id);
     }
 
-    public Client deleteClient(long id) throws DeleteNullClientException {
+    public Client deleteClient(long id) throws ClientNotFoundException {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isPresent()) {
             clientRepository.deleteById(id);
             return client.get();
         }
-        throw new DeleteNullClientException("delete null client");
+        throw new ClientNotFoundException("delete null client");
     }
 
     public Client addClient(Client client) {
         return clientRepository.saveAndFlush(client);
     }
 
-    public Client updateClient(Client client) throws UpdateNullClientException {
+    public Client updateClient(Client client) throws ClientNotFoundException {
         Optional<Client> clientOptional = clientRepository.findById(client.getId());
         if (clientOptional.isPresent()) {
             clientRepository.deleteById(client.getId());
             return clientOptional.get();
         }
-        throw new UpdateNullClientException("update null client");
+        throw new ClientNotFoundException("update null client");
     }
     
     public boolean existClientWithPassportSeriaAndNum(String seria, String number) {

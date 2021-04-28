@@ -8,15 +8,11 @@ import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookLimitException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullBookException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.DeleteNullRecordException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullBookTypeException;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.UpdateNullRecordException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.RecordNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.RecordRepository;
 
 @Service
-public class RecordService{
+public class RecordService {
 
     private final RecordRepository recordRepository;
     private final BookTypeService bookTypeService;
@@ -32,53 +28,54 @@ public class RecordService{
         return recordRepository.findAll();
     }
 
-    public Record getRecordById(long id) {
-        return recordRepository.getOne(id);
+    public Optional<Record> getRecordById(long id) {
+        return recordRepository.findById(id);
     }
 
-    public Record deleteRecord(long id) throws DeleteNullRecordException {
+    public Record deleteRecord(long id) throws RecordNotFoundException {
         Optional<Record> recordOptional = recordRepository.findById(id);
         if (recordOptional.isPresent()) {
             recordRepository.deleteById(id);
             return recordOptional.get();
         }
-        throw new DeleteNullRecordException("Delete null record");
+        throw new RecordNotFoundException("Delete null record");
     }
 
-    public Record addRecord(Record record) throws BookLimitException, UpdateNullBookTypeException, UpdateNullBookException, DeleteNullBookException {
+    public Record addRecord(Record record) throws BookLimitException {
         if (bookService.getCountOfBook(record.getBook().getId()) > 0
                 && getCountOfBooksAtClient(record.getClient().getId()) < 10) {
             BookType bookType = record.getBook().getBookType();
-            bookType.decrementOn(1);
             record.getBook().decrementOn(1);
             bookService.updateBook(record.getBook());
             bookTypeService.updateBooKType(bookType);
             return recordRepository.saveAndFlush(record);
         }
-
         throw new BookLimitException("limit books is 10");
     }
 
-    public Record updateRecord(Record record) throws UpdateNullRecordException {
+    public Record updateRecord(Record record) throws RecordNotFoundException {
         Optional<Record> recordOptional = recordRepository.findById(record.getId());
         if (recordOptional.isPresent()) {
             recordRepository.saveAndFlush(record);
             return record;
         }
-        throw new UpdateNullRecordException("Update null record");
+        throw new RecordNotFoundException("Update null record");
     }
 
-    public Record updateRecordReturnBook(Record record) throws UpdateNullRecordException, UpdateNullBookTypeException {
-        Optional<Record> recordOptional = recordRepository.findById(record.getId());
+    public Record updateRecordReturnBook(long id) throws RecordNotFoundException {
+        Optional<Record> recordOptional = recordRepository.findById(id);
         if (recordOptional.isPresent()) {
-            record.setDateReturn(Timestamp.valueOf(LocalDateTime.now()));
-            recordRepository.saveAndFlush(record);
-            record.getBook().getBookType().incrementOn(1);
-            record.getBook().incrementOn(1);
-            bookTypeService.updateBooKType(record.getBook().getBookType());
+            Record record = recordOptional.get();
+            if (record.getDateReturn() == null) {
+                record.setDateReturn(Timestamp.valueOf(LocalDateTime.now()));
+                recordRepository.saveAndFlush(record);
+                record.getBook().incrementOn(1);
+                bookTypeService.updateBooKType(record.getBook().getBookType());
+                return record;
+            }
             return record;
         }
-        throw new UpdateNullRecordException("Update null record");
+        throw new RecordNotFoundException("Update null record");
     }
 
     public int getCountOfBooksAtClient(long id) {

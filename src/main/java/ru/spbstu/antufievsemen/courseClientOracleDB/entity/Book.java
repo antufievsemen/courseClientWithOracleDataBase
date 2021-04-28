@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private long id;
 
@@ -21,7 +21,7 @@ public class Book {
 
     private int count;
 
-    @ManyToOne
+    @ManyToOne()
     private BookType bookType;
 
     public Book() {
@@ -38,6 +38,10 @@ public class Book {
         this.name = name;
         this.count = count;
         this.bookType = bookType;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getId() {
