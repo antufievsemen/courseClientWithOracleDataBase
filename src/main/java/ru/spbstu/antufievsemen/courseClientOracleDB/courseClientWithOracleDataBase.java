@@ -32,12 +32,16 @@ public class courseClientWithOracleDataBase {
         bookTypeService.addBookType(bookType1);
         bookTypeService.addBookType(bookType2);
 //        Book book = new Book("book", 11, bookType);
+//        Book book1 = new Book("book", 11, bookType);
 //        bookService.addBook(book);
-//        Client client = new Client("123", "123", "123", "123", "123");
-//        clientService.addClient(client);
-//        for (int i = 0; i < 10; i++) {
-//            recordService.addRecord(new Record(book, client));
-//        }
+//        bookService.addBook(book1);
+//        book1.setCount(2);
+//        bookService.updateBook(book1);
+////        Client client = new Client("123", "123", "123", "123", "123");
+////        clientService.addClient(client);
+////        for (int i = 0; i < 10; i++) {
+////            recordService.addRecord(new Record(book, client));
+////        }
         return true;
     }
 }

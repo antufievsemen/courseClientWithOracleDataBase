@@ -56,9 +56,9 @@ public class BookService {
             throw new UpdateNullBookException("update null book");
         }
         BookType bookType = book.getBookType();
-        bookType.setCount(book.getCount());
+        int temp_update = optionalBook.get().getCount() - book.getCount();
+        bookType.decrementOn(temp_update);
         bookTypeService.updateBooKType(bookType);
-        book.setCount(bookType.getCount());
         return bookRepository.saveAndFlush(book);
     }
 
