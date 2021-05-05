@@ -2,12 +2,14 @@ package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.ClientNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.ClientRepository;
 
 @Service
+@Transactional(rollbackOn = ClientNotFoundException.class)
 public class ClientService {
 
     private final ClientRepository clientRepository;

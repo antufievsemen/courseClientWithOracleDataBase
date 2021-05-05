@@ -1,10 +1,14 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -21,6 +25,10 @@ public class BookType {
     private int count;
 
     private int fine;
+
+    @OneToMany(mappedBy = "bookType")
+    @JsonIgnore
+    private Set<Book> books = new HashSet<>();
 
     @Column(name = "day_count")
     private int dayCount;
@@ -89,5 +97,24 @@ public class BookType {
 
     public void decrementOn(int number) {
         this.count -= number;
+    }
+
+    public Set<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(Set<Book> books) {
+        this.books = books;
+    }
+
+    @Override
+    public String toString() {
+        return "BookType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", count=" + count +
+                ", fine=" + fine +
+                ", dayCount=" + dayCount +
+                '}';
     }
 }

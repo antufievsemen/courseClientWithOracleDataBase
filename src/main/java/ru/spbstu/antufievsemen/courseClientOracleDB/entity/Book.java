@@ -1,11 +1,16 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +27,12 @@ public class Book {
     private int count;
 
     @ManyToOne()
+    @JoinColumn(name = "bookType_id")
     private BookType bookType;
+
+    @OneToMany(mappedBy = "client")
+    @JsonIgnore
+    private Set<Record> records = new HashSet<>();
 
     public Book() {
     }
@@ -78,5 +88,23 @@ public class Book {
 
     public void decrementOn(int number) {
         this.count -= number;
+    }
+
+    public Set<Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(Set<Record> records) {
+        this.records = records;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", count=" + count +
+                ", bookType=" + bookType.toString() +
+                '}';
     }
 }

@@ -2,12 +2,14 @@ package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookTypeNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookTypeRepository;
 
 @Service
+@Transactional(rollbackOn = BookTypeNotFoundException.class)
 public class BookTypeService {
 
     private final BookTypeRepository bookTypeRepository;

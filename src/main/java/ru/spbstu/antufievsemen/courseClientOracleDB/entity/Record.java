@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -21,9 +22,11 @@ public class Record {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name = "book_id")
     private Book book;
 
     @ManyToOne
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @Column(name = "date_begin")
@@ -115,5 +118,17 @@ public class Record {
 
     public void setDateReturn(Timestamp dateReturn) {
         this.dateReturn = dateReturn;
+    }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "id=" + id +
+                ", book=" + book.toString() +
+                ", client=" + client.toString() +
+                ", dateBeg=" + dateBeg +
+                ", dateEnd=" + dateEnd +
+                ", dateReturn=" + dateReturn +
+                '}';
     }
 }

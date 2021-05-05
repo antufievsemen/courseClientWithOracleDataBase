@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
@@ -12,6 +13,7 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.exception.RecordNotFoundExce
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.RecordRepository;
 
 @Service
+@Transactional(rollbackOn = {RecordNotFoundException.class, BookLimitException.class})
 public class RecordService {
 
     private final RecordRepository recordRepository;

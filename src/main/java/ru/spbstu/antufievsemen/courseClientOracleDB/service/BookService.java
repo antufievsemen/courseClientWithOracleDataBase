@@ -2,6 +2,7 @@ package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
@@ -10,6 +11,7 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookTypeNotFoundEx
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookRepository;
 
 @Service
+@Transactional(rollbackOn = BookNotFoundException.class)
 public class BookService {
 
     private final BookRepository bookRepository;
@@ -29,6 +31,7 @@ public class BookService {
     }
 
     public Book deleteBookById(long id) throws BookNotFoundException {
+
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             if (getCountOfBook(id) > 0) {

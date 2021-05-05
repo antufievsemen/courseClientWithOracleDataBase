@@ -5,15 +5,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookNotFoundException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookLimitException;
 
 @ControllerAdvice
-public class BookNotFoundAdvice {
+public class BookLimitAdvice {
 
-    @ResponseBody
-    @ExceptionHandler(BookNotFoundException.class)
+    @ExceptionHandler(BookLimitException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String bookNotFoundHandler(RuntimeException exception) {
-        return exception.getMessage();
+    @ResponseBody
+    public String bookLimitHandler(RuntimeException e) {
+        return e.getMessage();
     }
 }
