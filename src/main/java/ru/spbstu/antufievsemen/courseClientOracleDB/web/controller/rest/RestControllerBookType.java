@@ -33,21 +33,23 @@ public class RestControllerBookType {
     @GetMapping("/{id}")
     public BookType getOne(@PathVariable long id) {
         return bookTypeService.getBookTypeById(id).
-                orElseGet(() -> {throw new BookTypeNotFoundException("book type not found");});
+                orElseGet(() -> {
+                    throw new BookTypeNotFoundException("book type not found");
+                });
     }
 
-    @PostMapping("/addType")
+    @PostMapping
     public BookType addBookType(@RequestBody BookType bookType) {
         return bookTypeService.addBookType(bookType);
     }
 
-    @PutMapping("/updateType/{id}")
+    @PutMapping("/{id}")
     public BookType updateBooKType(@RequestBody BookType bookType, @PathVariable long id) {
         bookType.setId(id);
         return bookTypeService.updateBooKType(bookType);
     }
 
-    @DeleteMapping("/deleteType/{id}")
+    @DeleteMapping("/{id}")
     public BookType deleteBookType(@PathVariable long id) {
         return bookTypeService.deleteBookType(id);
     }

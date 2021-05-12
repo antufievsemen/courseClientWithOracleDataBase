@@ -9,10 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 
 @Entity
 @Table(name = "book_types")
+@Scope(value= ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BookType {
 
     @Id
@@ -49,6 +53,13 @@ public class BookType {
         this.count = count;
         this.fine = fine;
         this.dayCount = dayCount;
+    }
+
+    @PreRemove
+    private void preDelete() {
+        for (Book element: books) {
+            element.setBookType(null);
+        }
     }
 
     public long getId() {

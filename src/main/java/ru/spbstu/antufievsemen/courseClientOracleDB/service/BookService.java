@@ -48,8 +48,13 @@ public class BookService {
 
     public Book addBook(Book book) throws BookTypeNotFoundException {
         book.getBookType().incrementOn(book.getCount());
-        bookTypeService.updateBooKType(book.getBookType());
-        return bookRepository.saveAndFlush(book);
+        Optional<BookType> bookType = bookTypeService.getBookTypeById(book.getBookType().getId());
+        if (bookType.isPresent()) {
+            book.setBookType(bookType.get());
+            bookTypeService.updateBooKType(book.getBookType());
+            return bookRepository.saveAndFlush(book);
+        }
+        throw new BookTypeNotFoundException("book type not found");
     }
 
     public Book updateBook(Book book) throws BookNotFoundException, BookTypeNotFoundException {
@@ -57,11 +62,14 @@ public class BookService {
         if (optionalBook.isEmpty()) {
             throw new BookNotFoundException("update null book");
         }
-        BookType bookType = book.getBookType();
-        int temp_update = optionalBook.get().getCount() - book.getCount();
-        bookType.decrementOn(temp_update);
-        bookTypeService.updateBooKType(bookType);
-        return bookRepository.saveAndFlush(book);
+        Optional<BookType> bookType = bookTypeService.getBookTypeById(book.getBookType().getId());
+        if (bookType.isPresent()) {
+            int temp_update = optionalBook.get().getCount() - book.getCount();
+            bookType.get().decrementOn(temp_update);
+            bookTypeService.updateBooKType(bookType.get());
+            return bookRepository.saveAndFlush(book);
+        }
+        throw new BookTypeNotFoundException("book type not found");
     }
 
     public int getCountOfBook(long id) {

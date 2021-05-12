@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -26,7 +27,7 @@ public class Book {
 
     private int count;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "bookType_id")
     private BookType bookType;
 
@@ -48,6 +49,13 @@ public class Book {
         this.name = name;
         this.count = count;
         this.bookType = bookType;
+    }
+
+    @PreRemove
+    private void preDelete() {
+        for (Record elem: records) {
+            elem.setBook(null);
+        }
     }
 
     public void setId(long id) {

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
@@ -21,7 +22,7 @@ public class Record {
     @Column(nullable = false)
     private long id;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "book_id")
     private Book book;
 
@@ -41,36 +42,20 @@ public class Record {
     public Record() {
     }
 
-    public Record(long id, Book book, Client client, Timestamp dateBeg, Timestamp dateReturn) {
-        this.id = id;
-        this.book = book;
-        this.client = client;
-        this.dateBeg = dateBeg;
-        this.dateEnd = Timestamp.valueOf(dateBeg.
-                toLocalDateTime().
-                plusDays(this.book.getBookType().getDayCount()));
-        this.dateReturn = dateReturn;
-    }
-
-    public Record(Book book, Client client, Timestamp dateBeg) {
-        this.book = book;
-        this.client = client;
-        this.dateBeg = dateBeg;
-        this.dateEnd = Timestamp.valueOf(dateBeg.
-                toLocalDateTime().
-                plusDays(this.book.getBookType().getDayCount()));
-        this.dateReturn = null;
-    }
-
     public Record(Book book, Client client) {
         this.book = book;
         this.client = client;
+        this.dateReturn = null;
+    }
+
+    @PrePersist
+    private void prePersist() {
         this.dateBeg = Timestamp.valueOf(LocalDateTime.now());
         this.dateEnd = Timestamp.valueOf(dateBeg.
                 toLocalDateTime().
                 plusDays(this.book.getBookType().getDayCount()));
-        this.dateReturn = null;
     }
+
 
     public void setId(long id) {
         this.id = id;

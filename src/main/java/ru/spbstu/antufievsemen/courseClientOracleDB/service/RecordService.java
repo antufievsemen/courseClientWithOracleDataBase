@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
+import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookLimitException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookNotFoundException;
+import ru.spbstu.antufievsemen.courseClientOracleDB.exception.ClientNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.RecordNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.RecordRepository;
 
@@ -19,11 +23,13 @@ public class RecordService {
     private final RecordRepository recordRepository;
     private final BookTypeService bookTypeService;
     private final BookService bookService;
+    private final ClientService clientService;
 
-    public RecordService(RecordRepository recordRepository, BookTypeService bookTypeService, BookService bookService) {
+    public RecordService(RecordRepository recordRepository, BookTypeService bookTypeService, BookService bookService, ClientService clientService) {
         this.recordRepository = recordRepository;
         this.bookTypeService = bookTypeService;
         this.bookService = bookService;
+        this.clientService = clientService;
     }
 
     public List<Record> getRecords() {
@@ -46,6 +52,15 @@ public class RecordService {
     public Record addRecord(Record record) throws BookLimitException {
         if (bookService.getCountOfBook(record.getBook().getId()) > 0
                 && getCountOfBooksAtClient(record.getClient().getId()) < 10) {
+            Optional<Book> bookOptional = bookService.getBookById(record.getBook().getId());
+            Optional<Client> clientOptional = clientService.getClientById(record.getClient().getId());
+            if (bookOptional.isEmpty()) {
+                throw new BookNotFoundException("book not exist");
+            } else if (clientOptional.isEmpty()) {
+                throw new ClientNotFoundException("client not exist");
+            }
+            record.setBook(bookOptional.get());
+            record.setClient(clientOptional.get());
             BookType bookType = record.getBook().getBookType();
             record.getBook().decrementOn(1);
             bookService.updateBook(record.getBook());
@@ -53,15 +68,6 @@ public class RecordService {
             return recordRepository.saveAndFlush(record);
         }
         throw new BookLimitException("limit books is 10");
-    }
-
-    public Record updateRecord(Record record) throws RecordNotFoundException {
-        Optional<Record> recordOptional = recordRepository.findById(record.getId());
-        if (recordOptional.isPresent()) {
-            recordRepository.saveAndFlush(record);
-            return record;
-        }
-        throw new RecordNotFoundException("Update null record");
     }
 
     public Record updateRecordReturnBook(long id) throws RecordNotFoundException {
@@ -80,7 +86,19 @@ public class RecordService {
         throw new RecordNotFoundException("Update null record");
     }
 
-    public int getCountOfBooksAtClient(long id) {
+    public Integer getCountOfBooksAtClient(long id) {
         return recordRepository.countByDateReturnIsNullAndClientEquals(id);
+    }
+
+    public int getLargestFine() {
+        return recordRepository.getLargestFine();
+    }
+
+    public List<Record> getRecordsByClientId(long id) {
+        return recordRepository.getRecordsByClientId(id);
+    }
+
+    public List<Book> getThreePopularBooks() {
+        return recordRepository.getThreePopularBooks();
     }
 }

@@ -36,18 +36,18 @@ public class RestControllerClient {
                 orElseGet(()-> {throw new ClientNotFoundException("client not found");});
     }
 
-    @PostMapping("/addClient")
+    @PostMapping
     public Client addClient(@RequestBody Client client) {
         return clientService.addClient(client);
     }
 
-    @PutMapping("/updateClient")
+    @PutMapping("/{id}")
     public Client updateClient(@RequestBody Client client, @PathVariable long id) {
         client.setId(id);
         return clientService.updateClient(client);
     }
 
-    @DeleteMapping("/deleteClient/{id}")
+    @DeleteMapping("/{id}")
     public Client deleteClient(@PathVariable long id) {
         return clientService.deleteClient(id);
     }

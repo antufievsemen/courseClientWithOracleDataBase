@@ -36,18 +36,18 @@ public class RestControllerBook {
                 orElseGet(() -> {throw new BookNotFoundException("book not found");});
     }
 
-    @PostMapping("/addBook")
+    @PostMapping
     public Book addBook(@RequestBody Book book) {
         return bookService.addBook(book);
     }
 
-    @PutMapping("/updateBook/{id}")
+    @PutMapping("/{id}")
     public Book updateBook(@RequestBody Book book, @PathVariable long id) {
         book.setId(id);
         return bookService.updateBook(book);
     }
 
-    @DeleteMapping("/deleteBook/{id}")
+    @DeleteMapping("/{id}")
     public Book deleteBook(@PathVariable long id) {
         return bookService.deleteBookById(id);
     }

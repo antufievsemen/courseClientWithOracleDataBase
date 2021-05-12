@@ -42,7 +42,7 @@ public class ClientService {
     public Client updateClient(Client client) throws ClientNotFoundException {
         Optional<Client> clientOptional = clientRepository.findById(client.getId());
         if (clientOptional.isPresent()) {
-            clientRepository.deleteById(client.getId());
+            clientRepository.saveAndFlush(client);
             return clientOptional.get();
         }
         throw new ClientNotFoundException("update null client");

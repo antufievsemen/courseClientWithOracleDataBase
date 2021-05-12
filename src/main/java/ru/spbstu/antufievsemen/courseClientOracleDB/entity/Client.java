@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -57,6 +58,13 @@ public class Client {
         this.fatherName = fatherName;
         this.passportSeria = passportSeria;
         this.passportNumber = passportNumber;
+    }
+
+    @PreRemove
+    private void preDelete() {
+        for (Record record : records) {
+            record.setClient(null);
+        }
     }
 
     public void setId(long id) {

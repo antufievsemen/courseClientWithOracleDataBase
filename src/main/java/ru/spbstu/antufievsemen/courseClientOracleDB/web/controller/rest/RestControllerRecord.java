@@ -2,7 +2,6 @@ package ru.spbstu.antufievsemen.courseClientOracleDB.web.controller.rest;
 
 import java.util.List;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,24 +35,13 @@ public class RestControllerRecord {
                 orElseGet(()-> {throw new RecordNotFoundException("record not found");});
     }
 
-    @PostMapping("/addRecord")
+    @PostMapping
     public Record addRecord(@RequestBody Record record) {
         return recordService.addRecord(record);
     }
 
-    @PutMapping("/updateRecord/{id}")
-    public Record updateRecord(@RequestBody Record record, @PathVariable long id) {
-        record.setId(id);
-        return recordService.updateRecord(record);
-    }
-
-    @PutMapping("/updateRecordReturnDate/{id}")
-    public Record finishRecord(@PathVariable long id) {
+    @PutMapping("/{id}")
+    public Record updateRecord(@PathVariable long id, @RequestBody Record record) {
         return recordService.updateRecordReturnBook(id);
-    }
-
-    @DeleteMapping("/deleteRecord/{id}")
-    public Record deleteRecord(@PathVariable long id) {
-        return recordService.deleteRecord(id);
     }
 }

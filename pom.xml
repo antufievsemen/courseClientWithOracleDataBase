@@ -64,4 +64,6 @@
 
     </dependencies>
 
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+
 </project>

@@ -1,8 +1,6 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB;
 
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +8,6 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
-import ru.spbstu.antufievsemen.courseClientOracleDB.hibernate.session.HibernateSessionFactory;
 import ru.spbstu.antufievsemen.courseClientOracleDB.service.BookService;
 import ru.spbstu.antufievsemen.courseClientOracleDB.service.BookTypeService;
 import ru.spbstu.antufievsemen.courseClientOracleDB.service.ClientService;
@@ -21,10 +18,6 @@ public class courseClientWithOracleDataBase {
 
     public static void main(String[] args) {
         SpringApplication.run(courseClientWithOracleDataBase.class, args);
-        SessionFactory sessionFactory = HibernateSessionFactory.getSessionFactory();
-        Session session = sessionFactory.openSession();
-        sessionFactory.close();
-        HibernateSessionFactory.shutdown();
     }
 
     @Bean
@@ -44,6 +37,7 @@ public class courseClientWithOracleDataBase {
         clientService.addClient(client);
         Record record = new Record(book, client);
         recordService.addRecord(record);
+        recordService.updateRecordReturnBook(1);
         return true;
     }
 }
