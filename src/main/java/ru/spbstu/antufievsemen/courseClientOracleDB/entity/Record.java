@@ -48,6 +48,12 @@ public class Record {
         this.dateReturn = null;
     }
 
+    public Record(Book book, Client client, Timestamp dateReturn) {
+        this.book = book;
+        this.client = client;
+        this.dateReturn = dateReturn;
+    }
+
     @PrePersist
     private void prePersist() {
         this.dateBeg = Timestamp.valueOf(LocalDateTime.now());

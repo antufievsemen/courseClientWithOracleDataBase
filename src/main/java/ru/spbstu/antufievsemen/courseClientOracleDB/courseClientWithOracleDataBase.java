@@ -35,9 +35,9 @@ public class courseClientWithOracleDataBase {
         bookService.addBook(book);
         Client client = new Client("123", "123", "123", "123", "123");
         clientService.addClient(client);
-        Record record = new Record(book, client);
+//        Record record = new Record(book, client, Timestamp.valueOf(LocalDateTime.now().plusDays(200)));
+          Record record = new Record(book, client);
         recordService.addRecord(record);
-        recordService.updateRecordReturnBook(1);
         return true;
     }
 }

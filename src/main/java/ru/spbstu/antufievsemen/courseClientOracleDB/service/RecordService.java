@@ -1,13 +1,14 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
-import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookLimitException;
@@ -59,12 +60,10 @@ public class RecordService {
             } else if (clientOptional.isEmpty()) {
                 throw new ClientNotFoundException("client not exist");
             }
+            bookOptional.get().decrementOn(1);
+            bookOptional.get().getBookType().decrementOn(1);
             record.setBook(bookOptional.get());
             record.setClient(clientOptional.get());
-            BookType bookType = record.getBook().getBookType();
-            record.getBook().decrementOn(1);
-            bookService.updateBook(record.getBook());
-            bookTypeService.updateBooKType(bookType);
             return recordRepository.saveAndFlush(record);
         }
         throw new BookLimitException("limit books is 10");
@@ -87,18 +86,18 @@ public class RecordService {
     }
 
     public Integer getCountOfBooksAtClient(long id) {
-        return recordRepository.countByDateReturnIsNullAndClientEquals(id);
+        return recordRepository.countAllByDateReturnIsNullAndClientId(id);
     }
 
-    public int getLargestFine() {
+    public List<Record> getRecordsByDateReturnIsNotNullAndClient(long id) {
+        return recordRepository.getRecordsByDateReturnIsNotNullAndClientId(id);
+    }
+
+    public int getLargesFine() {
         return recordRepository.getLargestFine();
     }
 
-    public List<Record> getRecordsByClientId(long id) {
-        return recordRepository.getRecordsByClientId(id);
-    }
-
-    public List<Book> getThreePopularBooks() {
+    public List<Map<String, BigDecimal>> getThreePopularBooks() {
         return recordRepository.getThreePopularBooks();
     }
 }

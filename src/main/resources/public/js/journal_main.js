@@ -59,6 +59,7 @@ Vue.component('record-row', {
         '<i>' +
         'Book ID: {{ record.book.id }}, ' +
         '</i> ' +
+        'Book name: {{ record.book.name }}' +
         'Client First Name: {{ record.client.firstName }}, ' +
         'Client Last Name: {{ record.client.lastName }}, ' +
         'Client Father Name: {{ record.client.fatherName }} ,' +

@@ -46,15 +46,14 @@ public class BookService {
         throw new BookNotFoundException("delete null book");
     }
 
-    public Book addBook(Book book) throws BookTypeNotFoundException {
-        book.getBookType().incrementOn(book.getCount());
+    public Book addBook(Book book) {
         Optional<BookType> bookType = bookTypeService.getBookTypeById(book.getBookType().getId());
-        if (bookType.isPresent()) {
-            book.setBookType(bookType.get());
-            bookTypeService.updateBooKType(book.getBookType());
+        if(bookType.isPresent()) {
+            bookType.get().incrementOn(book.getCount());
+            bookTypeService.updateBooKType(bookType.get());
             return bookRepository.saveAndFlush(book);
         }
-        throw new BookTypeNotFoundException("book type not found");
+        throw new BookTypeNotFoundException("type not found");
     }
 
     public Book updateBook(Book book) throws BookNotFoundException, BookTypeNotFoundException {

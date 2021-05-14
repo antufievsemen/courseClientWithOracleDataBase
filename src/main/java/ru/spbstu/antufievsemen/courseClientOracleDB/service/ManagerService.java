@@ -1,7 +1,11 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
@@ -10,16 +14,12 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
 @Service
 public class ManagerService {
 
-    private final BookService bookService;
-    private final BookTypeService bookTypeService;
-    private final ClientService clientService;
     private final RecordService recordService;
+    private final BookService bookService;
 
-    public ManagerService(BookService bookService, BookTypeService bookTypeService, ClientService clientService, RecordService recordService) {
-        this.bookService = bookService;
-        this.bookTypeService = bookTypeService;
-        this.clientService = clientService;
+    public ManagerService(RecordService recordService, BookService bookService) {
         this.recordService = recordService;
+        this.bookService = bookService;
     }
 
     public Integer countOfBookByClient(long id) {
@@ -27,18 +27,18 @@ public class ManagerService {
     }
 
     public int getLargestFine() {
-        return recordService.getLargestFine();
+        return recordService.getLargesFine();
     }
 
     public int getFineByClientId(long id) {
-        List<Record> records = recordService.getRecordsByClientId(id);
+        List<Record> records = recordService.getRecordsByDateReturnIsNotNullAndClient(id);
         int result = 0;
         for (Record record : records) {
             Timestamp dateReturn = record.getDateReturn();
             Timestamp dateEnd = record.getDateEnd();
             if (dateReturn.after(dateEnd)) {
                 long time = dateReturn.getTime() - dateEnd.getTime();
-                long days = TimeUnit.DAYS.toDays(time);
+                long days = TimeUnit.MILLISECONDS.toDays(time);
                 result += days * record.getBook().getBookType().getFine();
             }
         }
@@ -46,6 +46,12 @@ public class ManagerService {
     }
 
     public List<Book> getThreePopularBooks() {
-        return recordService.getThreePopularBooks();
+        List<Book> resultList = new ArrayList<>();
+        List<Map<String, BigDecimal>> map = recordService.getThreePopularBooks();
+        for (Map<String, BigDecimal> stringBigDecimalMap : map) {
+            Optional<Book> book = bookService.getBookById(stringBigDecimalMap.get("ID").intValueExact());
+            book.ifPresent(resultList::add);
+        }
+        return resultList;
     }
 }
