@@ -82,11 +82,13 @@ Vue.component('type-row', {
         'Name: {{ type.name }}, ' +
         'Count: {{ type.count }}, ' +
         'Fine: {{ type.fine }} ,' +
-        'Day Count: {{ type.dayCount }} ' +
+        'Day Count: {{ type.dayCount }} .' +
+        '<div> ' +
         '<span style="position: absolute; right: 0;">' +
         '<input type="button" value="Edit" @click="edit" />' +
         '<input type="button" value="Delete" @click="del" />' +
         '</span>' +
+        '</div>' +
         '</div>',
     methods: {
         edit: function () {

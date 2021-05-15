@@ -93,7 +93,7 @@ public class RecordService {
         return recordRepository.getRecordsByDateReturnIsNotNullAndClientId(id);
     }
 
-    public int getLargesFine() {
+    public Integer getLargesFine() {
         return recordRepository.getLargestFine();
     }
 

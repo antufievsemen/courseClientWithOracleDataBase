@@ -17,7 +17,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
             "JOIN BOOK_TYPES bt On bt.ID = b.BOOK_TYPE_ID\n" +
             "Where (DATE_END < DATE_RETURN)\n" +
             "Group by j.CLIENT_ID")
-    int getLargestFine();
+    Integer getLargestFine();
 
     @Query(nativeQuery = true,
             value = "Select * From (Select b.ID, COUNT(b.ID) From journal j\n" +

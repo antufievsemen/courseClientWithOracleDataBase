@@ -26,7 +26,7 @@ public class ManagerService {
         return recordService.getCountOfBooksAtClient(id);
     }
 
-    public int getLargestFine() {
+    public Integer getLargestFine() {
         return recordService.getLargesFine();
     }
 

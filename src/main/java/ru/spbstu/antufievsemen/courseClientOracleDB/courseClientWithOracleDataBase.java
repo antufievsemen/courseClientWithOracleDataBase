@@ -4,6 +4,7 @@ package ru.spbstu.antufievsemen.courseClientOracleDB;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Client;
@@ -14,6 +15,7 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.service.ClientService;
 import ru.spbstu.antufievsemen.courseClientOracleDB.service.RecordService;
 
 @SpringBootApplication
+@EnableTransactionManagement
 public class courseClientWithOracleDataBase {
 
     public static void main(String[] args) {

@@ -1,7 +1,6 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.web.controller.rest;
 
 import java.util.List;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +10,6 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.service.ManagerService;
 
 @RestController
 @RequestMapping("/library/manager")
-@EnableTransactionManagement
 public class ManagerController {
 
     private final ManagerService managerService;
