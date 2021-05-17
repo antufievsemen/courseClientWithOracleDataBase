@@ -1,7 +1,6 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB.web.controller.rest;
 
 import java.util.List;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +14,6 @@ import ru.spbstu.antufievsemen.courseClientOracleDB.service.RecordService;
 
 @RestController
 @RequestMapping("/library/journal")
-@EnableTransactionManagement
 public class RestControllerRecord {
 
     private final RecordService recordService;
