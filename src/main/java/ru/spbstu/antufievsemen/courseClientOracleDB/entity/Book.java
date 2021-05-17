@@ -56,6 +56,7 @@ public class Book {
         for (Record elem: records) {
             elem.setBook(null);
         }
+        this.bookType = null;
     }
 
     public void setId(long id) {

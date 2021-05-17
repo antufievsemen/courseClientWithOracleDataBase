@@ -31,15 +31,14 @@ public class BookService {
     }
 
     public Book deleteBookById(long id) throws BookNotFoundException {
-
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             if (getCountOfBook(id) > 0) {
-                bookRepository.deleteById(id);
                 Book book = optionalBook.get();
                 BookType bookType = book.getBookType();
                 bookType.decrementOn(book.getCount());
                 bookTypeService.updateBooKType(bookType);
+                bookRepository.deleteById(id);
                 return book;
             }
         }

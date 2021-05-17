@@ -77,6 +77,11 @@ Vue.component('book-form', {
 
 Vue.component('book-row', {
     props: ['book', 'editBook', 'books'],
+    data: function () {
+        return {
+            bookType_notNull: true
+        }
+    },
     template:
         '<div> ' +
         '<i>' +
@@ -84,12 +89,19 @@ Vue.component('book-row', {
         '</i> ' +
         'Name: {{ book.name }}, ' +
         'Count: {{ book.count }}, ' +
+        '<div v-if="bookType_notNull"> ' +
         'BookType Name: {{ book.bookType.name }} .' +
+        '</div>' +
         '<span style="position: absolute; right: 0;">' +
         '<input type="button" value="Edit" @click="edit" />' +
         '<input type="button" value="Delete" @click="del" />' +
         '</span>' +
         '</div>',
+    created: function () {
+      if (this.book.bookType == null) {
+          this.bookType_notNull = false;
+      }
+    },
     methods: {
         edit: function () {
             this.editBook(this.book);

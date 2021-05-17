@@ -51,8 +51,16 @@ Vue.component('record-form', {
 
 Vue.component('record-row', {
     props: ['records', 'record'],
+    data: function () {
+        return {
+            client_botNull: true,
+            book_notNull: true,
+            book_notReturn: true
+        }
+    },
     template:
         '<div> ' +
+        '<div v-if="book_notNull"> ' +
         '<i>' +
         'ID: ({{ record.id }}), ' +
         '</i> ' +
@@ -60,16 +68,29 @@ Vue.component('record-row', {
         'Book ID: {{ record.book.id }}, ' +
         '</i> ' +
         'Book name: {{ record.book.name }}' +
+        '</div>' +
+        '<div v-if="client_botNull">' +
         'Client First Name: {{ record.client.firstName }}, ' +
         'Client Last Name: {{ record.client.lastName }}, ' +
         'Client Father Name: {{ record.client.fatherName }} ,' +
         'Client Passport seria: {{ record.client.passportSeria }} ,' +
         'Client Passport Number: {{ record.client.passportNumber }} ,' +
+        '</div>' +
         'Date Begin: {{ record.dateBeg }} ,' +
         'Date End: {{ record.dateEnd }} ,' +
         'Date Return: {{ record.dateReturn }} .' +
+        '<div v-if="book_notReturn">' +
         '<input type="button" value="Return" @click="edit"/>' +
+        '</div>' +
         '</div>',
+    created: function () {
+        if (this.record.client == null) {
+            this.client_botNull = false;
+        }
+        if (this.record.book == null) {
+            this.book_notNull = false;
+        }
+    },
     methods: {
         edit: function () {
             var record = this.record;
@@ -77,7 +98,7 @@ Vue.component('record-row', {
                 result.json().then(data => {
                         var index = getIndex(this.record, data.id);
                         this.records.splice(index, 1, data);
-
+                        this.book_notReturn = false;
                     }
                 )
             )
