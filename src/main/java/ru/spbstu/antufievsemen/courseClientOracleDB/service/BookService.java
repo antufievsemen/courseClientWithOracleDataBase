@@ -2,10 +2,12 @@ package ru.spbstu.antufievsemen.courseClientOracleDB.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Book;
 import ru.spbstu.antufievsemen.courseClientOracleDB.entity.BookType;
+import ru.spbstu.antufievsemen.courseClientOracleDB.entity.Record;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.exception.BookTypeNotFoundException;
 import ru.spbstu.antufievsemen.courseClientOracleDB.repository.BookRepository;
@@ -34,12 +36,14 @@ public class BookService {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             if (getCountOfBook(id) > 0) {
-                Book book = optionalBook.get();
-                BookType bookType = book.getBookType();
-                bookType.decrementOn(book.getCount());
-                bookTypeService.updateBooKType(bookType);
-                bookRepository.deleteById(id);
-                return book;
+                if (isAllBooksReturned(optionalBook.get().getRecords())) {
+                    Book book = optionalBook.get();
+                    BookType bookType = book.getBookType();
+                    bookType.decrementOn(book.getCount());
+                    bookTypeService.updateBooKType(bookType);
+                    bookRepository.deleteById(id);
+                    return book;
+                }
             }
         }
         throw new BookNotFoundException("delete null book");
@@ -62,7 +66,7 @@ public class BookService {
         }
         Optional<BookType> bookType = bookTypeService.getBookTypeById(book.getBookType().getId());
         if (bookType.isPresent()) {
-            int temp_update = optionalBook.get().getCount() - book.getCount();
+            int temp_update = - optionalBook.get().getCount();
             bookType.get().decrementOn(temp_update);
             bookTypeService.updateBooKType(bookType.get());
             return bookRepository.saveAndFlush(book);
@@ -72,5 +76,14 @@ public class BookService {
 
     public int getCountOfBook(long id) {
         return bookRepository.countOfBook(id);
+    }
+
+    private boolean isAllBooksReturned(Set<Record> recordSet) {
+        for (Record record : recordSet) {
+            if (record.getDateReturn() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

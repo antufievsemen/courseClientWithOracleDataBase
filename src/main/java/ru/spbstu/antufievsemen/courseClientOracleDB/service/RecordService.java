@@ -75,10 +75,9 @@ public class RecordService {
             Record record = recordOptional.get();
             if (record.getDateReturn() == null) {
                 record.setDateReturn(Timestamp.valueOf(LocalDateTime.now()));
-                recordRepository.saveAndFlush(record);
                 record.getBook().incrementOn(1);
-                bookTypeService.updateBooKType(record.getBook().getBookType());
-                return record;
+                record.getBook().getBookType().incrementOn(1);
+                return recordRepository.saveAndFlush(record);
             }
             return record;
         }

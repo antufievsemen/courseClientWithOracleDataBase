@@ -1,4 +1,4 @@
-var booksApi = Vue.resource('/library/books{/id}')
+var booksApi = Vue.resource('/library/books{/id}');
 
 function getIndex(list, id) {
     for (var i = 0; i < list.length; i++) {

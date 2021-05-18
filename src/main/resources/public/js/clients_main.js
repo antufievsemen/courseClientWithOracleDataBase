@@ -1,4 +1,4 @@
-var clientApi = Vue.resource('/library/clients{/id}')
+var clientApi = Vue.resource('/library/clients{/id}');
 
 function getIndex(list, id) {
     for (var i = 0; i < list.length; i++) {

@@ -1,6 +1,8 @@
 package ru.spbstu.antufievsemen.courseClientOracleDB;
 
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -37,8 +39,7 @@ public class courseClientWithOracleDataBase {
         bookService.addBook(book);
         Client client = new Client("123", "123", "123", "123", "123");
         clientService.addClient(client);
-//        Record record = new Record(book, client, Timestamp.valueOf(LocalDateTime.now().plusDays(200)));
-          Record record = new Record(book, client);
+        Record record = new Record(book, client, Timestamp.valueOf(LocalDateTime.now().plusDays(200)));
         recordService.addRecord(record);
         return true;
     }
